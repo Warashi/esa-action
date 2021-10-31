@@ -52,7 +52,7 @@ func _main() int {
 			log.Println(err)
 			return 1
 		}
-		if err :=  writeFile(filename, body, meta); err!= nil {
+		if err := writeFile(filename, body, meta); err != nil {
 			log.Println(err)
 			return 1
 		}

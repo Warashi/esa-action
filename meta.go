@@ -13,7 +13,7 @@ type Meta struct {
 	Category  string `yaml:"category"`
 	Tags      string `yaml:"tags"`
 	Published bool   `yaml:"published"`
-	Number    uint    `yaml:"number"`
+	Number    uint   `yaml:"number"`
 }
 
 func ParseMeta(r io.Reader) (*Meta, error) {
@@ -35,7 +35,7 @@ func ParseFile(r io.Reader) (body string, meta *Meta, err error) {
 	}
 	b, err := io.ReadAll(r)
 	if err != nil {
-		return "", nil,  fmt.Errorf("io.ReadAll: %w", err)
+		return "", nil, fmt.Errorf("io.ReadAll: %w", err)
 	}
 	return string(b), meta, nil
 }
