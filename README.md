@@ -2,7 +2,9 @@
 esacli is command line tool for esa.
 
 # Usage
-esacli -team warashi -file path/to/post.md
+```sh
+$ esacli -team warashi -file path/to/post.md
+```
 
 team: ex) warashi for warashi.esa.io
 
