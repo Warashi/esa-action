@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/Warashi/esa-action/frontmatter"
+	"github.com/Warashi/esacli/frontmatter"
 	"github.com/goccy/go-yaml"
 )
 
