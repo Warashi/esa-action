@@ -1,10 +1,13 @@
 package main
 
 import (
-	"os"
+	"bytes"
+	"testing"
+
+	"github.com/google/go-cmp/cmp"
 )
 
-func ExampleWrite() {
+func TestWrite(t *testing.T) {
 	body := `# hogehoge
 
 aaa
@@ -21,25 +24,29 @@ bar
 		Published: false,
 		Number:    10,
 	}
-
-	if err := write(os.Stdout, body, meta); err != nil {
+	var buf bytes.Buffer
+	if err := write(&buf, body, meta); err != nil {
 		panic(err)
 	}
 
-	// output:
-	// ---
-	// title: title
-	// category: foo/bar/hoge
-	// tags: tag1,tag2
-	// published: false
-	// number: 10
-	// ---
-	// # hogehoge
-	//
-	// aaa
-	// bbb
-	//
-	// # foobar
-	// foo
-	// bar
+	expected := `---
+title: title
+category: foo/bar/hoge
+tags: tag1,tag2
+published: false
+number: 10
+---
+# hogehoge
+
+aaa
+bbb
+
+# foobar
+foo
+bar
+`
+	if actual := buf.String(); actual != expected {
+		t.Log(actual)
+		t.Error(cmp.Diff(expected, actual))
+	}
 }
