@@ -15,18 +15,26 @@ import (
 )
 
 func main() {
-	if err := _main(); err != nil {
-		log.Fatalln(err)
-	}
+	os.Exit(_main())
 }
 
-func _main() error {
+func _main() int {
 	var teamName, filename string
 	flag.StringVar(&teamName, "team", "", "team name. ex) warashi for warashi.esa.io")
 	flag.StringVar(&filename, "file", "", "filename")
 	flag.Parse()
 
+	if teamName == "" || filename == "" {
+		flag.Usage()
+		return 1
+	}
+
 	token := os.Getenv("ESA_API_TOKEN")
+	if token == "" {
+		fmt.Println("set api token as environment variable named ESA_API_TOKEN")
+		return 1
+	}
+
 	client := esa.NewClient(token, teamName)
 
 	ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt)
@@ -34,21 +42,31 @@ func _main() error {
 
 	body, meta, err := parseFile(filename)
 	if err != nil {
-		return err
+		log.Println(err)
+		return 1
 	}
 
 	if meta.Number == 0 {
 		meta, err := create(ctx, client, body, meta)
 		if err != nil {
-			return err
+			log.Println(err)
+			return 1
 		}
-		return writeFile(filename, body, meta)
+		if err :=  writeFile(filename, body, meta); err!= nil {
+			log.Println(err)
+			return 1
+		}
 	}
 	meta, err = update(ctx, client, body, meta)
 	if err != nil {
-		return err
+		log.Println(err)
+		return 1
 	}
-	return writeFile(filename, body, meta)
+	if err := writeFile(filename, body, meta); err != nil {
+		log.Println(err)
+		return 1
+	}
+	return 0
 }
 
 func parseFile(filename string) (body string, meta *Meta, err error) {
